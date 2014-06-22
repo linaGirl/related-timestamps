@@ -1,4 +1,4 @@
 
 
 
-	module.exports = require('./lib/EeOrmTimestamps');
+	module.exports = require('./lib/Extension');
