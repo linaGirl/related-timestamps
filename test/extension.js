@@ -7,7 +7,7 @@
 		, assert 		= require('assert')
 		, async 		= require('ee-async')
 		, fs 			= require('fs')
-		, ORM 			= require('../../ee-orm');
+		, ORM 			= require('ee-orm');
 
 
 
@@ -181,6 +181,6 @@
 		});
 
 
-		
+
 	});
 	
