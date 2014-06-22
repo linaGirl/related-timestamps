@@ -27,21 +27,6 @@
 
 
 
-
-
-	var referenceDate = new Date(0);
-	referenceDate.setUTCFullYear(2014)
-	referenceDate.setUTCMonth(5)
-	referenceDate.setUTCDate(17)
-	referenceDate.setUTCHours(16);
-	referenceDate.setUTCMinutes(39);
-	referenceDate.setUTCSeconds(53);
-
-    // set a fixed timestamp for the timestamps feature
-    process.env.ORM_TIMESTAMP_VALUE = referenceDate;
-
-
-
 	describe('Travis', function(){
 		it('should have set up the test db', function(done){
 			var config;
