@@ -25,7 +25,7 @@
 
         new db.event().save(function(err, evt){
             evt.name = 'i\m fuckin tired!';
-            evt.save(done);
+            evt.delete(done);
         });
    
     });

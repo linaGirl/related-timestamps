@@ -127,11 +127,11 @@
 		it('should set correct timestamps when updating a record', function(done) {
 			// wait, we nede a new timestamp
 			setTimeout(function() {
-				db.event({id:1}).findOne(function(err, evt) {
+				db.event({id:1}, ['*']).findOne(function(err, evt) {
 					if (err) done(err);
 					else {
 						evt.name = 'func with timestamps? no, that ain\'t fun!';
-						evt.save(function(err, newInstnace){
+						evt.save(function(err){
 							assert.notEqual(evt.created, null);
 							assert.notEqual(evt.updated, null);
 							assert.notEqual(evt.updated.toUTCString(), oldDate.toUTCString());
@@ -142,5 +142,45 @@
 				});
 			}, 1500);
 		});
+
+
+		it('should set correct timestamps when deleting a record', function(done) {
+			db.event({id:1}, ['*']).findOne(function(err, evt) {
+				if (err) done(err);
+				else {
+					evt.delete(function(err) {
+						assert.notEqual(evt.created, null);
+						assert.notEqual(evt.updated, null);
+						assert.notEqual(evt.deleted, null);
+						done();
+					});					
+				}
+			});
+		});
+
+
+
+		it('should hard delete records when requested', function(done) {
+			db.event({id:1}, ['*']).findOne(function(err, evt) {
+				if (err) done(err);
+				else {
+					evt.hardDelete(function(err) {
+						if (err) done(err);
+						else {
+							db.event({id:1}, ['*']).findOne(function(err, evt) {
+								if (err) done(err);
+								else {
+									assert.equal(evt, undefined);
+									done();
+								}
+							});
+						}			
+					});					
+				}
+			});
+		});
+
+
+		
 	});
 	
