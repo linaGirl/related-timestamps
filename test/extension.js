@@ -144,9 +144,30 @@
 		});
 
 
+		it('should not return soft soft records when not requested', function(done) {
+			db.event({id:1}, ['*']).findOne(function(err, evt) {
+				if (err) done(err);
+				else {
+					assert.equal(evt, undefined);
+					done();
+				}
+			});
+		});
+
+
+		it('should return soft soft records when requested', function(done) {
+			db.event({id:1}, ['*']).includeSoftDeleted().findOne(function(err, evt) {
+				if (err) done(err);
+				else {
+					assert.equal(evt.id, 1);
+					done();
+				}
+			});
+		});
+
 
 		it('should hard delete records when requested', function(done) {
-			db.event({id:1}, ['*']).findOne(function(err, evt) {
+			db.event({id:1}, ['*']).includeSoftDeleted().findOne(function(err, evt) {
 				if (err) done(err);
 				else {
 					evt.hardDelete(function(err) {
@@ -164,8 +185,5 @@
 				}
 			});
 		});
-
-
-
 	});
 	

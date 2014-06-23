@@ -24,8 +24,12 @@
 
 
         new db.event().save(function(err, evt){
-            evt.name = 'i\m fuckin tired!';
-            evt.delete(done);
+            evt.delete(function(err){
+                if (err) done(err);
+                else {
+                    db.event({id:1}).findOne(done);
+                }
+            });
         });
    
     });
