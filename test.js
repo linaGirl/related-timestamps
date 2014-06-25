@@ -3,7 +3,7 @@
     var Class       = require('ee-class')
         , log       = require('ee-log')
         , async     = require('ee-async')
-        , ORM       = require('../ee-orm')
+        , ORM       = require('ee-orm')
         , project   = require('ee-project')
         , Extension = require('./');
 
@@ -22,14 +22,18 @@
             if (data && data.dir) data.dir();
         }
 
-
-        new db.event().save(function(err, evt){
-            evt.delete(function(err){
-                if (err) done(err);
-                else {
-                    db.event({id:1}).findOne(done);
-                }
-            });
+        db.event({id:1}, ['*']).findOne(function(err, evt) {
+            if (err) done(err);
+            else {
+                evt.delete(function(err) {
+                    assert.notEqual(evt.created, null);
+                    assert.notEqual(evt.updated, null);
+                    assert.notEqual(evt.deleted, null);
+                    done();
+                });                 
+            }
         });
+
+       // db.event({id:1}, ['*']).includeSoftDeleted().findOne(done);
    
     });

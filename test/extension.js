@@ -122,6 +122,7 @@
 							assert.notEqual(evt.updated.toUTCString(), oldDate.toUTCString());
 							assert.equal(evt.deleted, null);
 							done();
+
 						});					
 					}
 				});
@@ -144,7 +145,7 @@
 		});
 
 
-		it('should not return soft soft records when not requested', function(done) {
+		it('should not return soft deleted records when not requested', function(done) {
 			db.event({id:1}, ['*']).findOne(function(err, evt) {
 				if (err) done(err);
 				else {
@@ -155,7 +156,7 @@
 		});
 
 
-		it('should return soft soft records when requested', function(done) {
+		it('should return soft deleted records when requested', function(done) {
 			db.event({id:1}, ['*']).includeSoftDeleted().findOne(function(err, evt) {
 				if (err) done(err);
 				else {
