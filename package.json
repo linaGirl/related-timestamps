@@ -1,7 +1,7 @@
 {
       "name"                        : "ee-orm-timestamps"
     , "description"                 : "Timestamps / soft-delete extension for the ee-orm package"
-    , "version"                     : "0.2.3"
+    , "version"                     : "0.2.4"
     , "homepage"                    : "https://github.com/eventEmitter/ee-orm-timestamps"
     , "author"                      : "Michael van der Weg <michael@eventemitter.com> (http://eventemitter.com/)" 
     , "licence"                     : "mit"
