@@ -24,9 +24,9 @@
     }
     , "devDependencies": {
           "mocha"                   : "1.17.x"
-        , "ee-orm"                  : "^0.4.6"
-        , "ee-async"                : "^0.2.10"
-        , "ee-project"              : "^0.2.4"
+        , "ee-orm"                  : "0.6.X"
+        , "ee-async"                : "0.2.10"
+        , "ee-project"              : "0.2.4"
     }
     , "optionalDependencies": {}
     , "keywords"                    : ["ee", "orm", "extension", "timestamps", "soft-delete"]
