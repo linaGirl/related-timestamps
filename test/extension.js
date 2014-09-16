@@ -186,5 +186,23 @@
 				}
 			});
 		});
+
+		it('should not load softdeleted references', function(done) {
+			new db.event({
+				  name: 'so what'
+				, eventInstance: [new db.eventInstance({startdate: new Date(), deleted: new Date()})]
+			}).save(function(err, evt) {
+				if (err) done(err);
+				else {
+					db.event(['*'], {id:evt.id}).fetchEventInstance(['*']).findOne(function(err, event) {
+						if (err) done(err);
+						else {
+							assert.equal(event.eventInstance.length, 0);
+							done();
+						}
+					});
+				}
+			});
+		})
 	});
 	
