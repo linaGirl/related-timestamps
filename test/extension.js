@@ -1,208 +1,232 @@
 
-	
-	process.env.debug_sql = true;
+    
+    process.env.debug_sql = true;
 
-	var   Class 		= require('ee-class')
-		, log 			= require('ee-log')
-		, assert 		= require('assert')
-		, async 		= require('ee-async')
-		, fs 			= require('fs')
-		, ORM 			= require('ee-orm');
-
-
-
-	var   TimeStamps = require('../')
-		, sqlStatments
-		, extension
-		, orm
-		, db;
-
-
-	// sql for test db
-	sqlStatments = fs.readFileSync(__dirname+'/db.postgres.sql').toString().split(';').map(function(input){
-		return input.trim().replace(/\n/gi, ' ').replace(/\s{2,}/g, ' ')
-	}).filter(function(item){
-		return item.length;
-	});
+    var   Class         = require('ee-class')
+        , log           = require('ee-log')
+        , assert        = require('assert')
+        , async         = require('ee-async')
+        , fs            = require('fs')
+        , Promise       = (Promise || require('es6-promise').Promise)
+        , ORM           = require('ee-orm');
 
 
 
-	describe('Travis', function(){
-		it('should have set up the test db', function(done){
-			var config;
-
-			try {
-				config = require('../config.js').db
-			} catch(e) {
-				config = {
-					ee_orm_timestamps_test: {
-						  type: 'postgres'
-						, hosts: [
-							{
-								  host 		: 'localhost'
-								, username 	: 'postgres'
-								, password 	: ''
-								, port 		: 5432
-								, mode 		: 'readwrite'
-								, database 	: 'test'
-							}
-						]
-					}
-				};
-			}
-
-			this.timeout(5000);
-			orm = new ORM(config);
-			orm.on('load', done);
-		});
-
-		it('should be able to drop & create the testing schema ('+sqlStatments.length+' raw SQL queries)', function(done){
-			orm.getDatabase('ee_orm_timestamps_test').getConnection(function(err, connection){
-				if (err) done(err);
-				else {
-					async.each(sqlStatments, connection.queryRaw.bind(connection), done);
-				}
-			});				
-		});
-	});
+    var   TimeStamps = require('../')
+        , sqlStatments
+        , extension
+        , orm
+        , db;
 
 
-	var expect = function(val, cb){
-		return function(err, result){
-			try {
-				assert.equal(JSON.stringify(result), val);
-			} catch (err) {
-				return cb(err);
-			}
-			cb();
-		}
-	};
+    // sql for test db
+    sqlStatments = fs.readFileSync(__dirname+'/db.postgres.sql').toString().split(';').map(function(input){
+        return input.trim().replace(/\n/gi, ' ').replace(/\s{2,}/g, ' ')
+    }).filter(function(item){
+        return item.length;
+    });
 
 
-	describe('The TimeStamps Extension', function() {
-		var oldDate;
 
-		it('should not crash when instatiated', function() {
-			db = orm.ee_orm_timestamps_test;
-			extension = new TimeStamps();
-		});
+    describe('Travis', function(){
+        it('should have set up the test db', function(done){
+            var config;
 
+            try {
+                config = require('../config.js').db
+            } catch(e) {
+                config = [{
+                      type: 'postgres'
+                    , schema: 'ee_orm_timestamps_test'
+                    , database  : 'test'
+                    , hosts: [
+                        {
+                              host      : 'localhost'
+                            , username  : 'postgres'
+                            , password  : ''
+                            , port      : 5432
+                            , mode      : 'readwrite'
+                        }
+                    ]
+                }];
+            }
 
-		it('should not crash when injected into the orm', function(done) {
-			orm.use(extension);
-			orm.reload(done);
-		});
+            this.timeout(5000);
+            orm = new ORM(config);
+            done();
+        });
 
-
-		it('should set correct timestamps when inserting a new record', function(done) {
-			db = orm.ee_orm_timestamps_test;
-			new db.event().save(function(err, evt) {
-				if (err) done(err);
-				else {
-					assert.notEqual(evt.created, null);
-					assert.notEqual(evt.updated, null);
-					assert.equal(evt.deleted, null);
-					oldDate = evt.updated;
-					done();
-				}
-			});
-		});
-
-
-		it('should set correct timestamps when updating a record', function(done) {
-			// wait, we nede a new timestamp
-			setTimeout(function() {
-				db.event({id:1}, ['*']).findOne(function(err, evt) {
-					if (err) done(err);
-					else {
-						evt.name = 'func with timestamps? no, that ain\'t fun!';
-						evt.save(function(err){
-							assert.notEqual(evt.created, null);
-							assert.notEqual(evt.updated, null);
-							assert.notEqual(evt.updated.toUTCString(), oldDate.toUTCString());
-							assert.equal(evt.deleted, null);
-							done();
-
-						});					
-					}
-				});
-			}, 1500);
-		});
+        it('should be able to drop & create the testing schema ('+sqlStatments.length+' raw SQL queries)', function(done){
+            orm.getDatabase('ee_orm_timestamps_test').getConnection(function(err, connection){
+                if (err) done(err);
+                else {
+                    async.each(sqlStatments, connection.queryRaw.bind(connection), done);
+                }
+            });             
+        });
+    });
 
 
-		it('should set correct timestamps when deleting a record', function(done) {
-			db.event({id:1}, ['*']).findOne(function(err, evt) {
-				if (err) done(err);
-				else {
-					evt.delete(function(err) {
-						assert.notEqual(evt.created, null);
-						assert.notEqual(evt.updated, null);
-						assert.notEqual(evt.deleted, null);
-						done();
-					});					
-				}
-			});
-		});
+    var expect = function(val, cb){
+        return function(err, result){
+            try {
+                assert.equal(JSON.stringify(result), val);
+            } catch (err) {
+                return cb(err);
+            }
+            cb();
+        }
+    };
 
 
-		it('should not return soft deleted records when not requested', function(done) {
-			db.event({id:1}, ['*']).findOne(function(err, evt) {
-				if (err) done(err);
-				else {
-					assert.equal(evt, undefined);
-					done();
-				}
-			});
-		});
+    describe('The TimeStamps Extension', function() {
+        var oldDate;
+
+        it('should not crash when instatiated', function() {
+            db = orm.ee_orm_timestamps_test;
+            extension = new TimeStamps();
+        });
 
 
-		it('should return soft deleted records when requested', function(done) {
-			db.event({id:1}, ['*']).includeSoftDeleted().findOne(function(err, evt) {
-				if (err) done(err);
-				else {
-					assert.equal(evt.id, 1);
-					done();
-				}
-			});
-		});
+        it('should not crash when injected into the orm', function(done) {
+            orm.use(extension);
+            orm.load(done);
+        });
 
 
-		it('should hard delete records when requested', function(done) {
-			db.event({id:1}, ['*']).includeSoftDeleted().findOne(function(err, evt) {
-				if (err) done(err);
-				else {
-					evt.hardDelete(function(err) {
-						if (err) done(err);
-						else {
-							db.event({id:1}, ['*']).findOne(function(err, evt) {
-								if (err) done(err);
-								else {
-									assert.equal(evt, undefined);
-									done();
-								}
-							});
-						}			
-					});					
-				}
-			});
-		});
+        it('should set correct timestamps when inserting a new record', function(done) {
+            db = orm.ee_orm_timestamps_test;
+            new db.event().save(function(err, evt) {
+                if (err) done(err);
+                else {
+                    assert.notEqual(evt.created, null);
+                    assert.notEqual(evt.updated, null);
+                    assert.equal(evt.deleted, null);
+                    oldDate = evt.updated;
+                    done();
+                }
+            });
+        });
 
-		it('should not load softdeleted references', function(done) {
-			new db.event({
-				  name: 'so what'
-				, eventInstance: [new db.eventInstance({startdate: new Date(), deleted: new Date()})]
-			}).save(function(err, evt) {
-				if (err) done(err);
-				else {
-					db.event(['*'], {id:evt.id}).fetchEventInstance(['*']).findOne(function(err, event) {
-						if (err) done(err);
-						else {
-							assert.equal(event.eventInstance.length, 0);
-							done();
-						}
-					});
-				}
-			});
-		})
-	});
-	
+
+        it('should set correct timestamps when updating a record', function(done) {
+            // wait, we nede a new timestamp
+            setTimeout(function() {
+                db.event({id:1}, ['*']).findOne(function(err, evt) {
+                    if (err) done(err);
+                    else {
+                        evt.name = 'func with timestamps? no, that ain\'t fun!';
+                        evt.save(function(err){
+                            assert.notEqual(evt.created, null);
+                            assert.notEqual(evt.updated, null);
+                            assert.notEqual(evt.updated.toUTCString(), oldDate.toUTCString());
+                            assert.equal(evt.deleted, null);
+                            done();
+
+                        });                 
+                    }
+                });
+            }, 1500);
+        });
+
+
+        it('should set correct timestamps when deleting a record', function(done) {
+            db.event({id:1}, ['*']).findOne(function(err, evt) {
+                if (err) done(err);
+                else {
+                    evt.delete(function(err) {
+                        assert.notEqual(evt.created, null);
+                        assert.notEqual(evt.updated, null);
+                        assert.notEqual(evt.deleted, null);
+                        done();
+                    });                 
+                }
+            });
+        });
+
+
+        it('should not return soft deleted records when not requested', function(done) {
+            db.event({id:1}, ['*']).findOne(function(err, evt) {
+                if (err) done(err);
+                else {
+                    assert.equal(evt, undefined);
+                    done();
+                }
+            });
+        });
+
+
+        it('should return soft deleted records when requested', function(done) {
+            db.event({id:1}, ['*']).includeSoftDeleted().findOne(function(err, evt) {
+                if (err) done(err);
+                else {
+                    assert.equal(evt.id, 1);
+                    done();
+                }
+            });
+        });
+
+
+        it('should hard delete records when requested', function(done) {
+            db.event({id:1}, ['*']).includeSoftDeleted().findOne(function(err, evt) {
+                if (err) done(err);
+                else {
+                    evt.hardDelete(function(err) {
+                        if (err) done(err);
+                        else {
+                            db.event({id:1}, ['*']).findOne(function(err, evt) {
+                                if (err) done(err);
+                                else {
+                                    assert.equal(evt, undefined);
+                                    done();
+                                }
+                            });
+                        }           
+                    });                 
+                }
+            });
+        });
+
+        it('should not load softdeleted references', function(done) {
+            new db.event({
+                  name: 'so what'
+                , eventInstance: [new db.eventInstance({startdate: new Date(), deleted: new Date()})]
+            }).save(function(err, evt) {
+                if (err) done(err);
+                else {
+                    db.event(['*'], {id:evt.id}).fetchEventInstance(['*']).findOne(function(err, event) {
+                        if (err) done(err);
+                        else {
+                            assert.equal(event.eventInstance.length, 0);
+                            done();
+                        }
+                    });
+                }
+            });
+        })
+
+
+        it ('should work when using bulk deletes', function(done) {
+            new db.event({name: 'bulk delete 1'}).save().then(function() {
+                return new db.event({name: 'bulk delete 2'}).save()
+            }).then(function() {
+                return new db.event({name: 'bulk delete 3'}).save()
+            }).then(function() {
+                return db.event('id').find();
+            }).then(function(records) {
+                if (JSON.stringify(records) !== '[{"id":2},{"id":3},{"id":4},{"id":5}]') return Promise.reject(new Error('Expected «[{"id":2},{"id":3},{"id":4},{"id":5}]», got «'+JSON.stringify(records)+'»!'))
+                else return db.event({
+                    id: ORM.gt(3)
+                }).delete();
+            }).then(function() {
+                return db.event('id').find();
+            }).then(function(emptyList) {
+                if (JSON.stringify(emptyList) !== '[{"id":2},{"id":3}]') return Promise.reject(new Error('Expected «[{"id":2},{"id":3}]», got «'+JSON.stringify(emptyList)+'»!'))
+                else return db.event('id').includeSoftDeleted().find();
+            }).then(function(list) {
+                if (JSON.stringify(list) !== '[{"id":2},{"id":3},{"id":4},{"id":5}]') return Promise.reject(new Error('Expected «[{"id":2},{"id":3},{"id":4},{"id":5}]», got «'+JSON.stringify(list)+'»!'))
+                done();
+            }).catch(done);
+        })
+    });
+    
