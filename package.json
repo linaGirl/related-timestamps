@@ -1,7 +1,7 @@
 {
       "name"                        : "ee-orm-timestamps"
     , "description"                 : "Timestamps / soft-delete extension for the ee-orm package"
-    , "version"                     : "0.3.0"
+    , "version"                     : "0.3.1"
     , "homepage"                    : "https://github.com/eventEmitter/ee-orm-timestamps"
     , "author"                      : "Michael van der Weg <michael@eventemitter.com> (http://eventemitter.com/)" 
     , "licence"                     : "mit"
@@ -24,13 +24,13 @@
     }
     , "devDependencies": {
           "mocha"                   : "1.17.x"
-        , "ee-orm"                  : "^0.15.X"
+        , "ee-orm"                  : "^0.x.x"
         , "ee-async"                : "0.2.10"
         , "ee-project"              : "0.2.4"
         , "es6-promise"             : "2.0.x"
     }
     , "peerDependencies": {
-          "ee-orm"                  : "^0.15.x"
+          "ee-orm"                  : "^0.x.x"
     }
     , "optionalDependencies": {}
     , "keywords"                    : ["ee", "orm", "extension", "timestamps", "soft-delete"]
