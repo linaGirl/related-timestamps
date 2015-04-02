@@ -8,7 +8,7 @@
         , async         = require('ee-async')
         , fs            = require('fs')
         , Promise       = (Promise || require('es6-promise').Promise)
-        , ORM           = require('ee-orm');
+        , ORM           = require('related');
 
 
 
@@ -37,7 +37,7 @@
             } catch(e) {
                 config = [{
                       type: 'postgres'
-                    , schema: 'ee_orm_timestamps_test'
+                    , schema: 'related_timestamps_test'
                     , database  : 'test'
                     , hosts: [
                         {
@@ -57,7 +57,7 @@
         });
 
         it('should be able to drop & create the testing schema ('+sqlStatments.length+' raw SQL queries)', function(done){
-            orm.getDatabase('ee_orm_timestamps_test').getConnection(function(err, connection){
+            orm.getDatabase('related_timestamps_test').getConnection(function(err, connection){
                 if (err) done(err);
                 else {
                     async.each(sqlStatments, connection.queryRaw.bind(connection), done);
@@ -83,7 +83,7 @@
         var oldDate;
 
         it('should not crash when instatiated', function() {
-            db = orm.ee_orm_timestamps_test;
+            db = orm.related_timestamps_test;
             extension = new TimeStamps();
         });
 
@@ -95,7 +95,7 @@
 
 
         it('should set correct timestamps when inserting a new record', function(done) {
-            db = orm.ee_orm_timestamps_test;
+            db = orm.related_timestamps_test;
             new db.event().save(function(err, evt) {
                 if (err) done(err);
                 else {

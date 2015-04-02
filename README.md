@@ -1,4 +1,4 @@
-# ee-orm-timestamps
+# related-timestamps
 
 Timestamps / soft-delete extension for the ee-orm package. This extension sets automatically timestamps when creating, updating and deleting records. You may select which timestamps to set and what their name is. The orm model & queryBuilder will get two new methods which let you control how the orm should handle soft deletes on a per transaction basis.
 
@@ -6,11 +6,11 @@ The extension is only applied to models that have actually the timestamp columns
 
 ## installation
 
-    npm install ee-orm-timestamps
+    npm install related-timestamps
 
 ## build status
 
-[![Build Status](https://travis-ci.org/eventEmitter/ee-orm-timestamps.png?branch=master)](https://travis-ci.org/eventEmitter/ee-orm-timestamps)
+[![Build Status](https://travis-ci.org/eventEmitter/related-timestamps.png?branch=master)](https://travis-ci.org/eventEmitter/related-timestamps)
 
 
 ## usage
@@ -18,7 +18,7 @@ The extension is only applied to models that have actually the timestamp columns
 To add the extension to the orm you have to initialize the extension first.
     
     var   orm           = require('ee-orm')
-        , ORMTimestamps = require('ee-orm-timestamps');
+        , ORMTimestamps = require('related-timestamps');
 
 
     var orm = new ORM(dbConfig);
