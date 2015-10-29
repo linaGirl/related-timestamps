@@ -1,7 +1,7 @@
 {
       "name"                        : "related-timestamps"
     , "description"                 : "Timestamps / soft-delete extension for the related package"
-    , "version"                     : "0.4.2"
+    , "version"                     : "1.0.0"
     , "homepage"                    : "https://github.com/eventEmitter/related-timestamps"
     , "author"                      : "Michael van der Weg <michael@joinbox.com> (http://joinbox.com/)" 
     , "licence"                     : "mit"
@@ -10,27 +10,26 @@
         , "type"                    : "git"
     }
     , "engines": {
-        "node"                      : ">=v0.10.17"
+        "node"                      : ">=v4"
     }
     , "bugs": {
         "url"                       : "https://github.com/eventEmitter/related-timestamps/issues"
     }
     , "dependencies": {
-          "ee-class"                : "1.0.x"
-        , "ee-event-emitter"        : "0.1.x"
-        , "ee-types"                : "0.1.x"
-        , "ee-log"                  : "0.2.x"
+          "ee-class"                : "1.x"
+        , "ee-types"                : "1.x"
+        , "ee-event-emitter"        : "0.3.x"
+        , "ee-log"                  : "0.3.x"
         , "related-extension"       : "0.4.x"
     }
     , "devDependencies": {
           "mocha"                   : "1.17.x"
-        , "related"                 : "x.x.x"
+        , "related"                 : "1.x"
         , "ee-async"                : "0.2.10"
         , "ee-project"              : "0.2.4"
-        , "es6-promise"             : "2.0.x"
     }
     , "peerDependencies": {
-          "related"                 : "x.x.x"
+          "related"                 : "1.x"
     }
     , "optionalDependencies": {}
     , "keywords"                    : ["related", "orm", "extension", "timestamps", "soft-delete"]

@@ -7,7 +7,6 @@
         , assert        = require('assert')
         , async         = require('ee-async')
         , fs            = require('fs')
-        , Promise       = (Promise || require('es6-promise').Promise)
         , ORM           = require('related');
 
 
