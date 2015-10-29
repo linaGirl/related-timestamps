@@ -1,7 +1,7 @@
 {
       "name"                        : "related-timestamps"
     , "description"                 : "Timestamps / soft-delete extension for the related package"
-    , "version"                     : "1.0.0"
+    , "version"                     : "1.0.1"
     , "homepage"                    : "https://github.com/eventEmitter/related-timestamps"
     , "author"                      : "Michael van der Weg <michael@joinbox.com> (http://joinbox.com/)" 
     , "licence"                     : "mit"
@@ -18,12 +18,12 @@
     , "dependencies": {
           "ee-class"                : "1.x"
         , "ee-types"                : "1.x"
+        , "related-extension"       : "1.x"
         , "ee-event-emitter"        : "0.3.x"
         , "ee-log"                  : "0.3.x"
-        , "related-extension"       : "0.4.x"
     }
     , "devDependencies": {
-          "mocha"                   : "1.17.x"
+          "mocha"                   : "2.x"
         , "related"                 : "1.x"
         , "ee-async"                : "0.2.10"
         , "ee-project"              : "0.2.4"
