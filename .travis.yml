@@ -1,10 +1,11 @@
 language: node_js
 
 node_js : 
-    - "v4"
+    - "v4.2.1"
+    - "v5"
 
 addons:
-    postgresql: "9.3"
+    postgresql: "9.4"
 
 before_script:
   - psql -f test/db.create.postgres.sql -U postgres

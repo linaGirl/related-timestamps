@@ -1,3 +1,5 @@
+(function() {
+    'use strict';
 
     
     process.env.debug_sql = true;
@@ -5,8 +7,8 @@
     var   Class         = require('ee-class')
         , log           = require('ee-log')
         , assert        = require('assert')
-        , async         = require('ee-async')
         , fs            = require('fs')
+        , QueryContext  = require('related-query-context')
         , ORM           = require('related');
 
 
@@ -38,15 +40,7 @@
                       type: 'postgres'
                     , schema: 'related_timestamps_test'
                     , database  : 'test'
-                    , hosts: [
-                        {
-                              host      : 'localhost'
-                            , username  : 'postgres'
-                            , password  : ''
-                            , port      : 5432
-                            , mode      : 'readwrite'
-                        }
-                    ]
+                    , hosts: [{}]
                 }];
             }
 
@@ -56,12 +50,22 @@
         });
 
         it('should be able to drop & create the testing schema ('+sqlStatments.length+' raw SQL queries)', function(done){
-            orm.getDatabase('related_timestamps_test').getConnection(function(err, connection){
-                if (err) done(err);
-                else {
-                    async.each(sqlStatments, connection.queryRaw.bind(connection), done);
-                }
-            });             
+            orm.getDatabase('related_timestamps_test').getConnection('write').then((connection) => {
+                return new Promise((resolve, reject) => {
+                    let exec = (index) => {
+                        if (sqlStatments[index]) {
+                            connection.query(new QueryContext({sql:sqlStatments[index]})).then(() => {
+                                exec(index + 1);
+                            }).catch(reject);
+                        }
+                        else resolve();
+                    }
+
+                    exec(0);
+                });
+            }).then(() => {
+                done();
+            }).catch(done);
         });
     });
 
@@ -228,4 +232,4 @@
             }).catch(done);
         })
     });
-    
+})();
