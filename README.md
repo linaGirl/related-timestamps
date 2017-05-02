@@ -1,5 +1,7 @@
 # related-timestamps
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/eventEmitter/related-timestamps.svg)](https://greenkeeper.io/)
+
 [![npm](https://img.shields.io/npm/dm/related-timestamps.svg?style=flat-square)](https://www.npmjs.com/package/related-timestamps)
 [![Travis](https://img.shields.io/travis/eventEmitter/related-timestamps.svg?style=flat-square)](https://travis-ci.org/eventEmitter/related-timestamps)
 [![node](https://img.shields.io/node/v/related-timestamps.svg?style=flat-square)](https://nodejs.org/)
